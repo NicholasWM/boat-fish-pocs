@@ -149,3 +149,11 @@ npm start
 ## 📝 Licença
 
 MIT
+
+## 🛠️ Ferramentas de Desenvolvimento
+
+Este projeto foi desenvolvido com auxílio de ferramentas de IA:
+
+- **Agente Atlas (opencode)** — Orquestração e desenvolvimento principal
+- **Sub-agents especializados** — Tarefas paralelas de codificação
+- **GitHub Copilot** — Auxílio em completção de código
