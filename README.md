@@ -21,6 +21,16 @@ SaaS whitelabel para locação de barcos de pesca e passeios. Cada cliente (tena
 - **Auth**: NextAuth
 - **Deploy**: Vercel / Docker
 
+## 🤖 Modelos de IA Utilizados
+
+Este projeto foi desenvolvido com auxílio de modelos de IA locais:
+
+- **Ornith 1.0 35B** — Modelo principal (MoE A3B, VLM, 262k context)
+- **Qwen3.8 27B** — Sub-agentes (Unsloth UD-Q2_K_XL, 10.7 GB)
+- **Gemma 4 26B-A4B** — Verificação de código (A4500, 101 tok/s)
+- **Claude Opus 5** — Orquestração e planejamento
+- **Claude Fable 5** — Codificação intensiva
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -149,11 +159,3 @@ npm start
 ## 📝 Licença
 
 MIT
-
-## 🛠️ Ferramentas de Desenvolvimento
-
-Este projeto foi desenvolvido com auxílio de ferramentas de IA:
-
-- **Agente Atlas (opencode)** — Orquestração e desenvolvimento principal
-- **Sub-agents especializados** — Tarefas paralelas de codificação
-- **GitHub Copilot** — Auxílio em completção de código
