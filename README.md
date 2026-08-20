@@ -149,14 +149,3 @@ npm start
 ## 📝 Licença
 
 MIT
-
-## 🤖 Modelos de IA Utilizados
-
-Este projeto foi desenvolvido com auxílio de modelos de IA:
-
-- **Claude** (Anthropic) — Desenvolvimento e codificação
-- **GPT-4** (OpenAI) — Auxílio em arquitetura e debugging
-
-## 📄 Licença
-
-MIT
