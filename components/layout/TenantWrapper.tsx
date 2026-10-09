@@ -29,6 +29,7 @@ export function TenantWrapper({ tenant, children }: TenantWrapperProps) {
         features={features}
         navItems={navItems}
         currentPath={''}
+        tenantSlug={tenantSlug}
       />
       <div className="flex-1 flex flex-col">
         <Topbar
