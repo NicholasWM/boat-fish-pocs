@@ -2,6 +2,8 @@
 
 SaaS whitelabel para locação de barcos de pesca e passeios. Cada cliente (tenant) opera com branding próprio, features configuráveis, dentro de uma única instância Next.js.
 
+PoC escrita inteiramente por modelos de IA rodando localmente; veja [Como foi feito](#como-foi-feito).
+
 ## 🚀 Funcionalidades
 
 - **Multi-tenancy**: Isolamento completo de dados por tenant
@@ -13,21 +15,12 @@ SaaS whitelabel para locação de barcos de pesca e passeios. Cada cliente (tena
 
 ## 🛠️ Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Linguagem**: TypeScript 5
-- **Estilização**: Tailwind CSS
+- **Estilização**: Tailwind CSS 4
 - **ORM**: Drizzle ORM
-- **Banco**: SQLite (dev) / PostgreSQL (prod)
-- **Auth**: NextAuth
-- **Deploy**: Vercel / Docker
-
-## 🤖 Modelos de IA Utilizados
-
-Este projeto foi desenvolvido inteiramente por agentes de IA locais:
-
-- **Ornith 1.0 35B** — Modelo principal (MoE A3B, VLM, 262k context)
-- **Qwen3.8 27B** — Sub-agentes (Unsloth UD-Q2_K_XL, 10.7 GB)
-- **Gemma 4 26B-A4B** — Verificação de código (A4500, 101 tok/s)
+- **Banco**: SQLite em arquivo local (`ornith.db`) via `@libsql/client`
+- **Auth**: NextAuth (credentials provider)
 
 ## 📁 Estrutura do Projeto
 
@@ -139,12 +132,13 @@ await db.select().from(bookings)
 
 ## 🚢 Deploy
 
+Não há configuração de deploy (Vercel, Docker ou Postgres) no repositório: o banco é sempre o arquivo SQLite local.
+
 ### Variáveis de Ambiente
 
 ```env
-DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 NEXTAUTH_SECRET="your-secret-here"
-NEXTAUTH_URL="https://your-domain.com"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### Produção
@@ -153,6 +147,28 @@ NEXTAUTH_URL="https://your-domain.com"
 npm run build
 npm start
 ```
+
+## Como foi feito
+
+Nenhuma linha foi escrita à mão. O build rodou numa única sessão do [opencode](https://opencode.ai), com modelos locais servidos por llama-swap em duas GPUs.
+
+| Papel | Modelo | O que fez |
+|---|---|---|
+| Agente principal | **Ornith 1.0 35B-A3B** (MoE, Q4_K_M), também na variante com visão | Planejou as 7 fases, escreveu praticamente todo o código e corrigiu os bugs |
+| Exploração | modelo de código local | Varreduras do repositório |
+| Subagents | **Qwen3.8 27B Q4_K_M** (5 lanes, nas duas GPUs) | Disparados para as fases 2 a 7; **todos voltaram com resultado vazio**, e o agente principal refez o trabalho sozinho |
+
+O que funcionou: o painel multi-tenant com as 7 tabelas escopadas por `tenant_id`, branding por CSS custom properties, feature flags por tenant, CRUD de barcos, reservas, tripulação, clientes e pagamentos, e seed com 2 tenants. O build passa.
+
+O que o build não pegou: três bugs de rota, achados pelo dono clicando no app e depois corrigidos pelo agente principal:
+
+1. 404 depois do login: as páginas estavam em `app/[tenantSlug]` em vez de `app/tenant/[tenantSlug]`.
+2. Todo item do menu levava de volta para o login: os links da sidebar não tinham o prefixo `/tenant/:slug`.
+3. O segundo tenant de exemplo não existia no seed.
+
+Ficaram de fora: validação de sobreposição de reservas, ações em modal e upload real de foto. Depois disso foi adicionada uma página pública por tenant em `/public/[tenantSlug]`.
+
+Uma observação sobre a autoria: versões anteriores deste README atribuíram o projeto a modelos que não rodaram nesta sessão. Isso foi texto gerado pelo próprio modelo, que não sabia quais modelos estavam em uso. Esta seção foi reescrita a partir dos registros da sessão. O Gemma não participou, e os subagents rodaram em Q4_K_M, não em Q2.
 
 ## 📝 Licença
 
